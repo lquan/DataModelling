@@ -1,0 +1,16 @@
+#Andreas Put & Li Quan - May 23, 2011
+#homework 2
+
+autos<-read.table("autos.txt",header=T,sep=",",na.strings="?");
+attach(autos)
+autos$symboling <- as.ordered(autos$symboling)
+autos <- na.omit(autos)
+
+autos2 <- autos[sapply(autos,is.numeric)]
+
+
+autos2.pca <- prcomp(autos2,scale=TRUE,center=TRUE)
+plot(autos2.pca)
+
+summary(autos2.pca)
+

@@ -1,0 +1,30 @@
+
+The dataset contains $p=26$ attributes, and $n=206$ observations. It also contains some instances with missing attribute values, especially for normalized losses. Because we have a large amount of data ($n>5p$), we chose to simply omit observations with any missing attribute values. If we do this, we still have plenty of data to use---more specifically $n=159$ observations---which is why we chose this method instead of replacing them with for instance variable means or interpolations \cite{missingvalues}.
+
+We have an \emph{exploratory observational} dataset. A tool such as ggobi\footnote{\url{http://www.ggobi.org/}} allows us to visualize the data in different ways to get familiar with the dataset. This way, we interactively searched for extreme outliers and screened explanatory variables.
+
+We found out that the variable `engine-location' only had 3 instances of `rear' (0 after removing instances with missing values) which is why we can easily discard this variable. Furthermore, as we have such a highly dimensional dataset, for our analysis we will mostly only consider the numerical attributes and one categorical variable (that is, `drive-wheels'). We will focus on regression models where the response variable is the price (this
+was also the goal in \cite{kibbler} where an instance-based machine learning model was used). Some plots of the response variable are shown in \autoref{fig:priceVsAllNum}. Clearly, this is still quite some data to process and to analyze.
+
+\autoref{fig:corrplot} shows the visualization of the correlation matrix: it is clear that many variables are highly correlated together, for instance, we have an almost perfect correlation between `city.mpg' and `highway.mpg', and `length' and `width'. So this means we have to pay extra attention for multicollinearity effects. %MULTICOLLINEARITY
+
+\autoref{fig:logarithmicTransformation} shows that the price variable should be transformed. We can test this formally using the Shapiro-Wilk normality test on the price.
+\begin{verbatim}
+Shapiro-Wilk normality test
+data:  autos$price
+W = 0.829, p-value = 2.351e-12
+\end{verbatim}
+After a (common) logarithmic transformation,
+\begin{verbatim}
+Shapiro-Wilk normality test
+data:  autos2$price
+W = 0.9411, p-value = 3.576e-06
+\end{verbatim}
+we get a better but still a rather poor result. Using the (more general) BoxCox transformation, where the parameter $\lambda=-0.4$ was found using maximization of the log-likelihood (\autoref{fig:boxcox}), we get a much better result:
+\begin{verbatim}
+Shapiro-Wilk normality test
+data:  autosNum$price
+W = 0.9634, p-value = 0.0003285
+\end{verbatim}
+
+We also see that the boxplot of drive-wheels versus price (\autoref{fig:drivewheelsbox}) is much better using this transformation.

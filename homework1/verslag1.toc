@@ -1,0 +1,6 @@
+\select@language {dutch}
+\contentsline {section}{\numberline {1}Vraag 1}{1}{section.1}
+\contentsline {section}{\numberline {2}Vraag 2}{2}{section.2}
+\contentsline {section}{\numberline {3}Vraag 3}{3}{section.3}
+\contentsline {section}{\numberline {4}Vraag 4}{3}{section.4}
+\contentsline {section}{\numberline {A}R-code}{3}{appendix.A}

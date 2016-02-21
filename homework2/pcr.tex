@@ -1,0 +1,88 @@
+Because our dataset is highly dimensional, Principal Component Analysis (PCA) can be used for data reduction. Using this method, we can convert a set of possible correlated variables to a set of uncorrelated (principal) components. 
+
+For non-numerical attributes we could do PCA introducing binary variables (which would attain comparable results to Multiple Correspondence Analysis (MCA)). However, for betters results we would have to  to find a suitable way to represent distances between variable categories and individuals in the factorial space. This can be done for instance using Gifi Methods for Optimal Scaling \cite{gifi}, implemented in the R package `homals'. This seems however way out of scope so for our PCA we will simply limit our dataset to the 15 numerical attributes.
+
+A Partial Least Squares Regression will also be conducted, and we will determine the best method for this dataset.
+
+\subsection{Principal Component Regression}
+The first step in the PCR is the PCA itself (Figure~\ref{fig:biplot}).
+Using the screeplot in Figure~\ref{fig:screeplot} we can use about 4--6 PC's to account for 80--90\% of the variance:
+\begin{verbatim}
+                         PC1    PC2    PC3     PC4     PC5     PC6 
+Standard deviation     2.6478 1.5063 1.2006 0.95939 0.83978 0.65437
+Proportion of Variance 0.5008 0.1621 0.1029 0.06574 0.05037 0.03059
+Cumulative Proportion  0.5008 0.6629 0.7658 0.83154 0.88192 0.91250
+\end{verbatim}
+
+For our analysis we use the 4 first PC's (see Figure~\ref{fig:pcrnormal}). The resulting model has a RMSE of 2745. The results of the regression analysis are shown below:
+\begin{verbatim}
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)
+(Intercept)       11445.73     217.69  52.579  < 2e-16 ***
+autos2.pca$x[, 1] -1936.92      82.47 -23.485  < 2e-16 ***
+autos2.pca$x[, 2]    32.99     144.97   0.228    0.820
+autos2.pca$x[, 3]   783.43     181.89   4.307 2.93e-05 ***
+autos2.pca$x[, 4]  -132.65     227.62  -0.583    0.561
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 2745 on 154 degrees of freedom
+Multiple R-squared: 0.7874,	Adjusted R-squared: 0.7819
+F-statistic: 142.6 on 4 and 154 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+After applying the Box-Cox transformation on the price, the resulting model has an RMSE of 2822.113. This is greater then the first model, but when we study the results (see Figure~\ref{fig:pcrbc}), we see that 1 price-estimate is responsible for this bad RMSE.\footnote{While studying this model, we have to keep in mind that the price values are transformed.}
+\begin{verbatim}
+Coefficients:
+                    Estimate Std. Error  t value Pr(>|t|)
+(Intercept)        2.4369983  0.0003124 7799.794  < 2e-16 ***
+autos2.pca$x[, 1] -0.0036713  0.0001184  -31.014  < 2e-16 ***
+autos2.pca$x[, 2]  0.0003439  0.0002081    1.653  0.10044
+autos2.pca$x[, 3]  0.0007255  0.0002611    2.779  0.00613 **
+autos2.pca$x[, 4]  0.0000775  0.0003267    0.237  0.81280
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 0.00394 on 154 degrees of freedom
+Multiple R-squared: 0.8633,	Adjusted R-squared: 0.8597
+F-statistic: 243.1 on 4 and 154 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+We can see that this model is quite better than the first model: the $R^2$ value is slightly better, although the RMSE value is larger than the first one. The summary of these models are located at Summary~\ref{sum:pcrpls}. We can see that the mean of this model is worse than the mean of the first model, which explains the worse RMSE. However, the variance of this model is very close to the real variance, which can be seen by the median and quantiles. This explains the better $R^2$ value for the PCR with Box-Cox.
+
+\subsection{Partial Least Squares}
+Instead of finding hyperplanes of maximum variance between the response and regressions, PLS finds a linear regression model by projecting the predicted variables and the observable variables to a new space. So again, this is a nice method for our high dimensional dataset.
+
+After applying the partial least squares (\autoref{fig:pcr_pls}) the following results are visible:
+\begin{verbatim}
+        (Intercept)   1 comps   2 comps   3 comps   4 comps
+CV         0.01055  0.004031  0.003889  0.003855  0.003877
+adjCV      0.01055  0.004025  0.003876  0.003842  0.003861
+
+TRAINING: % variance explained
+                1 comps  2 comps  3 comps  4 comps
+X                 50.04    60.22    70.75    80.19
+autos2.bcprice    86.14    87.92    88.42    88.60
+\end{verbatim}
+With this PLS regression, a cross validation check is conducted. The details of the predicted price values are shown in Summary~\ref{sum:pcrpls}.
+\begin{summary}
+\caption{Summary of the PCR and PLS models}
+\label{sum:pcrpls}
+\begin{verbatim}
+> summary - Price
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+   5120    7370    9230   11400   14700   35100
+> summary - PCR price
+  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  -1892    7121   10870   11450   15320   28730
+> summary - PCRboxcox price
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+   4200    7310    9570   11300   13900   53800
+> summary - PLSR price
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  -2110    7020   10900   11400   15500   27000
+  \end{verbatim}
+\end{summary}
+
+We see that the PLSR predictions have a better estimate with regard to the mean, but when we look at the quantiles, the PCR with the Box-Cox transformation still wins. Even the PCR without the Box-Cox transformation yiels better values for the variance and median. We can conclude for this dataset that a PCR method is preferable to a PLSR method.
+

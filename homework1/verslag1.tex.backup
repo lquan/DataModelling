@@ -1,0 +1,307 @@
+\documentclass[a4paper,dutch,11pt,]{scrartcl}
+\usepackage{mystyle}\usepackage{ dsfont }
+\renewcommand{\tableautorefname}{Tabel}
+\title{Statische Modellen \& Data-analyse}
+\subtitle{Homework 1}
+\author{Li Quan}
+%\subject{Verslag}
+\date{27 april 2011}
+\bibliographystyle{abbrv}
+\DeclareMathOperator{\floor}{Floor}
+
+
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+
+%\end{abstract}
+
+%\tableofcontents
+
+
+\section*{Vraag 1}
+\label{vraag1}
+Gegeven de verdelingsfunctie (waarbij $\lfloor {x} \rfloor= \floor{(x)}$ en $p\in (0,1)$)
+\[
+ F_X(x) =
+  \begin{cases}
+   1 - (1-p)^{\lfloor {x} \rfloor} & \text{als } x \geq 1 \\
+   0       & \text{elders }
+  \end{cases}
+\]
+kan de dichtheidsfunctie $f_X(x)$ berekend worden:
+\begin{equation*}
+ f_X(x)= \frac{\partial F_X(x)}{\partial x} = \ln{(1-p)} (-(1-p)^{\lfloor {x} \rfloor}) \frac{\partial {\lfloor {x} \rfloor}}{\partial x}.
+\end{equation*}
+De maximum likelihood schatter voor $p$ (gegeven een steekproef $x_1,\ldots,x_n$ uit $F_X$), \[ \hat{p}_{MLE}=\argmax_{p} \displaystyle\sum\limits_{i=1}^n \ln{f_X(x_i)} \]
+kan gevonden worden door volgende vergelijking op te lossen naar $\hat{p}$:
+\begin{align*}
+ 0 &= \sum\limits_{i=1}^n  \frac{\partial \ln{f_X(x_i)}} {\partial p}\Big |_{p=\hat{p}} = \sum\limits_{i=1}^n \Big\{
+      -\frac{1}{\ln{(1-\hat{p})}} \frac{1}{1-\hat{p}}  
+      + \frac{ \lfloor{x_i} \rfloor} {1-\hat{p}} \Big\}
+\end{align*}
+Uiteindelijk vinden we (na bevestiging dat het om een maximum gaat) \[ \hat{p}_{MLE} = 1 - \exp (\frac{-n}{ \sum\limits_{i=1}^n  { \lfloor{x_i} \rfloor } } ). \] 
+
+\paragraph{}
+Om te illustreren dat $\hat{p}_{MLE}$ een vertekende schatter is van $p$ werd dit in R gesimuleerd (zie code in \autoref{Rcode}) voor $n=50$. \autoref{rexperiment} toont de resultaten hiervan: hieruit blijkt dat de MLE waarschijnlijk een onderschatter is.
+
+\begin{table}[hbpt]
+\centering
+
+
+\begin{tabular}{S S S S S S S }
+\toprule
+% 
+  & & \multicolumn{5}{c}{$\hat{p}^{(k)}_{MLE}$} \\\cmidrule{3-7}
+$p$ & & \multicolumn{1}{c}{1} & \multicolumn{1}{c}{2} & \multicolumn{1}{c}{3} & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{5}\\ \midrule
+0.1 & & 0.097 & 0.104 & 0.108 & 0.093 & 0.090\\
+0.3 & & 0.315 & 0.323 & 0.295 & 0.300 & 0.300\\
+0.5 & & 0.473 & 0.482 & 0.531 & 0.461 & 0.553\\
+0.7 & & 0.671 & 0.655 & 0.647 & 0.640 & 0.654\\
+0.9 & & 0.854 & 0.770& 0.875 & 0.771 & 0.780\\
+%   & & \multicolumn{5}{c}{$p=$} \\ 
+%  {$\hat{p}_{MLE}$} & &  \\ \midrule
+
+ \bottomrule
+\end{tabular}
+
+
+\caption{$\hat{p}_{MLE}$ voor verschillende waarden van $p$ met $n=50$ (zie R-code~\autoref{Rcode}). \label{rexperiment}}
+\end{table}
+
+\paragraph{}
+Om dit te bewijzen defini\"eren we eerst de bias $b(\hat{p}) = \mathds{E}[\hat{p}] - p$. Dan moeten we aantonen dat $b(\hat{p})\neq 0$.
+Algemeen werd reeds aangetoond dat MLE schatters onvertekend zijn tot op orde $n^{-1/2}$, maar vertekend op orde $n^{-1}$ \cite[Eq.~(20)]{biased}.
+
+Een algemene uitdrukking voor de bias van een MLE schatter $\hat{\theta}$ is \cite{firth:1993}: \[b(\theta) = \frac{b_1(\theta)}{n} + \frac{b_2(\theta)}{n^2} + \ldots \]
+Asymptotisch is de MLE dus onvertekend (dit is de asymptotische normaliteitseigenschap van MLE schatters), aangezien $\lim_{n\rightarrow \infty} b =  0$.
+
+
+\section*{Vraag 2}
+
+
+We beschouwen eerst $Y$ en $Z$. Dan is $\begin{pmatrix} Y \\Z \end{pmatrix} \sim \mathcal{N}_2( \begin{pmatrix} \mu_Y \\ \mu_Z \end{pmatrix}, 
+\begin{pmatrix}
+\sigma_{YY} & \sigma_{YZ} \\
+\sigma_{ZY} & \sigma_{ZZ} 
+\end{pmatrix})$,
+waarbij we volgende vergelijkingen moeten oplossen ($\mu_Z = 0$ en $\sigma_{Z}^2 = \sigma_{ZZ} = 1$):
+\begin{align*}
+ \mathds{E}[{Y|Z=z}] &= 1+z \\      &= \mu_{YY} + \sigma_{YZ} \sigma_{Z}^{-1} (z-\mu_Z) = \mu_Y + \sigma_{YZ} z    \\
+ \textnormal{Cov}[{Y|Z=z}] &= 1 \\ &= \sigma_{YY} - \sigma_{YZ}\sigma_{Z}^{-1}\sigma_{ZY} = \sigma_{YY} - \sigma_{YZ}\sigma_{ZY}  
+\end{align*}
+De oplossing hiervoor is $\mu_Y = 1$, $\sigma_{YZ} = \sigma_{ZY} = 1$ en $\sigma_{YY} = 2$.
+
+Dus dan is\footnote{Hierbij worden cijferindices gebruikt: $X\equiv 1$, $Y\equiv 2$ en $Z\equiv 3$.} $\begin{pmatrix} X \\ Y \\Z \end{pmatrix} \sim \mathcal{N}_3( \begin{pmatrix} \mu_1 \\ \mu_2 \\ \mu_3 \end{pmatrix}, 
+\begin{pmatrix}
+\sigma_{11}  & \sigma_{12} & \sigma_{13}\\
+\sigma_{21} & \sigma_{22} & \sigma_{23} \\
+\sigma_{31} & \sigma_{32} & \sigma_{33} \\
+\end{pmatrix})$,  met bijkomende vergelijkingen:
+\begin{align*}
+\mathds{E}[{X|Y=y,Z=z}] &= 1-y \\ &= \mu_1 + \begin{pmatrix} \sigma_{12} & \sigma_{13} \end{pmatrix} 
+\begin{pmatrix}
+\sigma_{22} & \sigma_{23} \\
+\sigma_{32} & \sigma_{33} 
+\end{pmatrix}^{-1} \begin{pmatrix}y -\mu_2 \\ z-\mu_3 \end{pmatrix} \\
+\end{align*}
+\begin{align*}
+\textnormal{Cov}[X|Y=y,Z=z] &= 1 \\ &=\sigma_{11} - \begin{pmatrix} \sigma_{12} & \sigma_{13} \end{pmatrix} \begin{pmatrix} \sigma_{22} & \sigma_{23} \\ \sigma_{32} & \sigma_{33} \end{pmatrix}^{-1} \begin{pmatrix} \sigma_{21} \\ \sigma_{31}\end{pmatrix}
+\end{align*}
+De oplossingen van het volledige stelsel zijn dan: $\mu_1 = 0$, $\mu_2 = 1$, $\mu_3 = 0$, $\sigma_{11} = 3$, $\sigma_{22}=2$, $\sigma_{33}=1$, $\sigma_{12}=\sigma_{21}=2$, $\sigma_{13}=\sigma_{31}=1$ en $\sigma_{23}=\sigma_{32}=1$.
+Dus is \[\begin{pmatrix} X \\ Y \\Z \end{pmatrix} \sim \mathcal{N}_3( \begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} 
+\begin{pmatrix}
+3  & 2 & 1\\
+2 & 2 & 1 \\
+1 & 1 & 1 \\
+\end{pmatrix}).\]
+
+\paragraph{}
+Na herschikken tot $\begin{pmatrix} Y \\ X \\Z \end{pmatrix} \sim \mathcal{N}_3( \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} 
+\begin{pmatrix}
+2  & 2 & 1\\
+2 & 3 & 1 \\
+1 & 1 & 1 \\
+\end{pmatrix})$ kunnen we gemakkelijk $Y|X,Z \sim \mathcal{N}(\mu_Y,\sigma_{YY})$ berekenen waarbij
+\begin{align*}
+ \mu_Y &= 1 + \begin{pmatrix} 2 & 1 \end{pmatrix} \begin{pmatrix} 3 & 1 \\ 1 & 1 \end{pmatrix}^{-1} \begin{pmatrix} X \\ Z \end{pmatrix} = \frac{X+Z}{2}\\
+ \sigma_{YY} &= 2 - \begin{pmatrix} 2 & 1 \end{pmatrix} \begin{pmatrix} 3 & 1 \\ 1 & 1 \end{pmatrix}^{-1} \begin{pmatrix} 2 \\ 1 \end{pmatrix} = \frac{1}{2}
+\end{align*}
+
+\paragraph{}
+% $f_Z (z) = \frac{1}{\sqrt{2\pi}} e^{(\frac{-x^2}{2})}$.
+Voor de verdeling van $(U,V)^\tau$ zoeken we eerst de verdeling van $U$ en $V$. Hiervoor gebruiken we volgende eigenschap: als $X\sim \mathcal{N}(\mu, \sigma^2)$, dan is een lineaire transformatie $aX+b \sim \mathcal{N}(a\mu + b,a^2\sigma^2)$.
+Uit $U = 1 +Z$ en $V = 1- Y$ volgt dan dat $U\sim\mathcal{N}(1,1)$ en $V\sim\mathcal{N}(0,2)$. Verder volgt uit de lineariteitseigenschap van de covariantie dat $\textnormal{cov}(U,V)=\textnormal{cov}(1+Z,1-Y)=\textnormal{cov}(Z,-Y)=-\textnormal{cov}(Z,Y)=-1$ zodat
+
+\[ \begin{pmatrix} U \\V \end{pmatrix} \sim \mathcal{N}_2( \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 & -1 \\ -1 &  2 \end{pmatrix}).\]
+
+\paragraph{}
+Aangezien $\textnormal{cov}(U,Y)=\textnormal{cov}(1+Z,Y)=\textnormal{cov}(Z,Y)=1$, is $\begin{pmatrix} U \\ Y \end{pmatrix} \sim \mathcal{N}_2( \begin{pmatrix} 1 \\ 1\end{pmatrix}, \begin{pmatrix} 1 & 1 \\ 1 & 2 \end{pmatrix})$.
+Dan is $\mathds{E}(Y|U=u) = \mu_Y + \sigma_{21}\sigma_{11}^{-1}(u - \mu_U )$ en dus
+\begin{align*}\mathds{E}(Y|U=2) & = 1 + \frac{1}{1}(2-1) = 2.\end{align*} 
+% \int y f_{Y|U} (y|u=2) \, dy
+
+\section*{Vraag 3}
+% Aangezien de hypothese $\mu_1 = \mu_2 = \mu_3$ kan opgesplitst worden als $\mu_1 = \mu_2$, $\mu_1 = \mu_3$ en $\mu_2 =\mu_3$, kunnen we
+% de hypothese schrijven als $\vec{A}\vec{\mu} = \vec{\mu}_0$, waarbij $\vec{A} = \begin{pmatrix}  1 & -1 & 0 \\ 1 & 0 & -1 \\ 0 & 1 & -1\end{pmatrix}$.
+% Dit is echter een singulier matrix.
+
+Definieer $\vec{X}_i' = \begin{pmatrix} X_{i1} \\ X_{i2} \\ X_{i3}\end{pmatrix} - \begin{pmatrix} X_{i1} \\ X_{i1} \\ X_{i1}\end{pmatrix}$. Dan is $\mathds{E}[\vec{X}_i']=\vec{\mu}' = \begin{pmatrix} \mu_1 \\ \mu_2 \\ \mu_3\end{pmatrix} - \begin{pmatrix} \mu_1 \\ \mu_1 \\ \mu_1\end{pmatrix} = \begin{pmatrix} 0\\ \mu_2 - \mu_1 \\ \mu_3 - \mu_1\end{pmatrix}$. 
+Dan is de hypothese equivalent met $\vec{A} \vec{\mu}' = \vec{\mu}_0 = \vec{0}$, waarbij bv.~$\vec{A} =  \begin{pmatrix}  1 & 0 & 0 \\0 & 1 & -1 \\ 0 & 0 & 1\end{pmatrix}$.
+% Analoog voor $\vec{X}_i'' = \begin{pmatrix} X_{i1} \\ X_{i2} \\ X_{i3}\end{pmatrix} - \begin{pmatrix} X_{i2} \\ X_{i2} \\ X_{i2}\end{pmatrix}$ en $\mathds{E}[\vec{X}_i'']=\vec{\mu}''  = \begin{pmatrix} \mu_1-\mu_2\\ 0 \\ \mu_3 - \mu_2\end{pmatrix}$.
+Dan kunnen we eenvoudig de $T^2$-test van Hotelling gebruiken waarbij:
+\begin{align*}
+ \vec{\overline{X}}' &= \sum_{i=1}^n \vec{X}_i'\\
+ \vec{S} &= \frac{1}{n-1} \sum_{i=1}^{n} (\vec{X}_i' - \vec{\overline{X}}')(\vec{X}_i' - \vec{\overline{X}}')^\tau\\
+ T^2 &= n (\vec{\overline{X}}' - \vec{\mu}_0)^\tau \vec{S}^{-1} (\vec{\overline{X}}' - \vec{\mu}_0) \sim F_{3,n-1} & |H_0
+\end{align*}
+
+% 
+% We maken gebruik van de one-way ANOVA (analysis of variance) techniek. ANOVA kan gezien worden als een generalisatie van de t-toets voor twee steekproeven.
+% Deze techniek laat toe om ook het gegeven voorbeeld verder te veralgemenen (in het opgegeven geval is het aantal observaties $D=n$ en het aantal groepen $S=3$).
+% 
+% Bereken eerst de groepsgemiddelden $\overline{X}_i$ en het algemeen gemiddelde $GM$:
+% \begin{align*}
+% \overline{X}_i &= \frac{1}{D} \sum^D_{j=1} X_{ij}\\
+% GM &= \frac{1}{SD}  \sum^S_{i=1} \sum^D_{j=1} X_{ij}= \frac{1}{S} \sum^S_{i=1} \overline{X}_i .
+% \intertext{Vervolgens berekenen we de totale kwadratensom $SS_t$ met aantal vrijheidsgraden $\nu_t$,}
+% SS_t &= \sum^S_{i=1} \sum^D_{j=1} (X_{ij} - GM)^2\\
+% \nu_t &= SD - 1
+% \intertext{de variatie binnen de groepen $SS_w$ met aantal vrijheidsgraden $\nu_w$,}
+%  SS_w &= \sum^S_{i=1} \sum^D_{j=1} (X_{ij} - \overline{X}_i)^2\\
+% \nu_w &= S(D-1)
+% \intertext{en de variatie tussen de groepen $SS_b$ met aantal vrijheidsgraden $\nu_b$,}
+%  SS_b&= \sum^S_{i=1} \sum^D_{j=1} D(\overline{X}_i - GM)^2\\
+%  \nu_b &= S-1.
+% \end{align*}
+% 
+% De respectieve gemiddelde kwadratensommen zijn dan $MSS_b=SS_b/\nu_b$ en $MSS_w={SS_w}/{\nu_w}$.
+% We kunnen nu de hypothese testen aan de hand van een F-test (indien $F \gg 1$ is het waarschijnlijk dat er een verschil is tussen de groepsgemiddelden) met teststatistiek $F = \frac{MSS_b}{MSS_w}$. De kritieke waarde $F_{crit}=F_{\alpha,\nu_b,\nu_w}$ kan worden bepaald via bv.~tabellen en zo kan uiteindelijk een $p$-waarde berekend worden om de nulhypothese te aanvaarden of verwerpen op een bepaald significantieniveau $\alpha$.
+% 
+% 
+
+ 
+
+
+
+
+\section*{Vraag 4}
+Definieer $\vec{D}_i = \vec{X}_{i1} - \vec{X}_{i2}$,  $\vec{S}_D = \frac{(n_1-1)\vec{S}_1 + (n_2-1)\vec{S}_2}{n_1+n_2-2}=\frac{\vec{S}_1+\vec{S}_2}{2}$ (aangezien $n=n_1=n_2$) en $\vec{\mu}_D=\vec{\mu}_1 - \vec{\mu}_2$. (Alle hypothesetesten gebeuren op het significantieniveau $\alpha = 0.05$.)
+
+De nulhypothese $\vec{\mu_1} = \vec{\mu}_2$ is dan equivalent met $\vec{\mu}_D = \vec{0}$.
+We gebruiken de multivariate \emph{gepaarde} $T^2$-test van Hotelling \cite{Anderson84} waarbij $T^2 = n \vec{\overline{d}}^{\tau}\vec{S}_D^{-1}\vec{\overline{d}}$. Dan kan volgende $F$-statistiek gebruikt worden: $F=\frac{n-p}{p(n-1)}T^2\sim F_{p,n-p}$.
+
+Voor de gegeven realisatie ($n = 10$ en $p=2$) wordt dit dus:
+\begin{align*}
+ \vec{\overline{d}} &= \begin{pmatrix}
+                             3 & 1
+                             \end{pmatrix}^\tau - \begin{pmatrix}
+                             1 & 1
+                             \end{pmatrix}^\tau =  \begin{pmatrix}
+                             2 & 0
+                             \end{pmatrix}^\tau \\
+ \vec{s}_D &= \frac{1}{2} \left\{ \begin{pmatrix}
+                 4 & -1\\
+		  -1 & 2
+                \end{pmatrix}+\begin{pmatrix}
+                 2 & -2\\
+		  -2 & 4
+                \end{pmatrix}\right\} = \begin{pmatrix}
+                 3 & -1.5\\
+		  -1.5 & 3
+                \end{pmatrix} \\
+ t^2 &= 10\begin{pmatrix}
+           2 & 0
+          \end{pmatrix}
+	  \begin{pmatrix} 
+           0.444 & 0.222\\
+	    0.222  & 0.444
+           \end{pmatrix}
+\begin{pmatrix} 2 & 0 \end{pmatrix}^\tau = 17.778 \\
+f&= \frac{8}{18}t^2=     7.902
+\end{align*}
+De $p$-waarde is $p=2P_{H_0}(F \geq |f|)= 2( 1-0.9872)= 0.0255 <  0.05$. Dus we verwerpen de nulhypothese.
+
+
+\paragraph{}
+Voor de hypothesetesten voor de aparte componenten gebruiken we volgende formule voor het $100(1-\alpha )\%$ betrouwbaarheidsinterval (BI):
+\[\vec{u}^\tau \vec{\overline{D}} \pm t_{n-1,1-\alpha /2}\sqrt{\frac{\vec{u}^\tau \vec{S}_D\vec{u}}{n}}.\]
+
+Voor de nulhypothese $H_0:\mu_{11}=\mu_{21}$ kiezen we $\vec{u} = \begin{pmatrix}
+                                                            1 & 0
+                                                           \end{pmatrix}^\tau$.
+We krijgen dan als BI
+\begin{align*}
+\begin{pmatrix} 1 & 0 \end{pmatrix} \begin{pmatrix} 2 \\ 0 \end{pmatrix}
+&\pm t_{9,0.975} \sqrt{ \frac{\begin{pmatrix} 1 & 0 \end{pmatrix} \begin{pmatrix}
+                 3 & -1.5\\
+		  -1.5 & 3
+                \end{pmatrix}  \begin{pmatrix} 1 & 0 \end{pmatrix}^\tau}{10} }.
+\end{align*} Met $t_{9,0.975} = 2.262$ geeft dit dan als BI $= [0.761; 3.239]$. We verwerpen dus $H_0$ aangezien het BI niet 0 bevat.
+
+\paragraph{}
+Analoog voor de nulhypothese $H_0:\mu_{12}=\mu_{22}$ (waarbij $\vec{u} = \begin{pmatrix}
+                                                            0 & 1
+                                                           \end{pmatrix}^\tau$), verkrijgen we uiteindelijk het BI $=[-1.239;1.239]$. Hier aanvaarden we dus wel $H_0$.
+
+
+
+
+% We beschouwen $n$ koppels $(X_{1i},X_{2i})$ met $X_{1i}\sim \mathcal{N}(\mu_{1i},\sigma^2_{1i})$ en $X_{2i}\sim \mathcal{N}(\mu_{2i},\sigma^2_{2i})$. Definieer $D_i = X_{1i}-X_{2i}$. De teststatistiek is dan 
+% \begin{align*}
+%   T&= \frac{\overline{D}_n}{S_D/\sqrt{n}} \sim T_{n-1} \;\;\; |H_0
+% \end{align*}
+% 
+% Voor de nulhypotheses $H_0: \mu_{1i} = \mu_{2i}$ ($i=1\ldots 2)$ bereken we de $p$-waarden (waarbij $p=2P_{H_0}(T\geq |t|)$:
+% \begin{align*}
+% \overline{d}_1 &= 2 & \overline{d}_2 &= 0 & \\
+% s_{D_1}^2 &= \frac{4^2+2^2}{2}=20 & s_{D_2}^2 &= \frac{2^2+4^2}{2}=20 \\
+% t(i=1) &= \frac{2}{\sqrt{20}/\sqrt{10}} = \sqrt{2} & t(i=2) &= 0\\
+% p(i=1) &=  0.191                         & p(i=2) &= 1
+% \end{align*}
+
+
+
+
+
+
+
+
+
+
+% We gebruiken de gewijzigde Hotelling $T^2$ test:
+% \begin{align*}
+%  T^2 = (\vec{\overline{x}}_1-\vec{\overline{x}}_2)'\left\{  \frac{1}{n1}\vec{S}_1 + \frac{1}{n2} \vec{S}_2 \right \} ^ {-1} (\vec{\overline{x}}_1-\vec{\overline{x}}_2).
+% \end{align*}
+
+
+\clearpage
+\appendix
+\section{R-code\label{Rcode}}
+\lstset{ %
+language=R,                % the language of the code
+basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+commentstyle=\scriptsize \ttfamily\emph,
+stringstyle=\scriptsize\ttfamily,
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+}
+\lstinputlisting{./R/stat_q1_liquan.R}
+
+
+\clearpage
+\bibliography{biblio}
+
+
+\end{document}
+
+
+	
+

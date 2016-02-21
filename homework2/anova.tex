@@ -1,0 +1,52 @@
+Consider the difference in price between autos based on the form of engine/transmission layout used in the motor vehicles---where the engine either drives only the front wheels (fwd), rear wheels (rwd) or both (4wd). The boxplot in \autoref{fig:drivewheelsbox} suggests that there are differences amongst them.
+
+First we check the normality assumption (\autoref{fig:qqdrive-wheel}):
+the Q-Q plot does not give a strong impression that the prices for the different wheel-drives are not normal distributed. The Shapiro-Wilk test is used to confirm this. Summary~\ref{sum:shap} shows that the front and rear wheel-drive have a low $p$-value. They are probably not exactly normal, but it is close enough on the decision boundary with $\alpha = 0.025$.
+
+\begin{summary}
+\caption{Shapiro-Wilk test: Prices~wheel drives}
+\label{sum:shap}
+\begin{verbatim}
+data:  autosWorking.4wd
+W = 0.888, p-value = 0.224
+data:  autosWorking.fwd
+W = 0.9737, p-value = 0.03496
+data:  autosWorking.rwd
+W = 0.9444, p-value = 0.0286
+\end{verbatim}
+\end{summary}
+
+There is little evidence to doubt the homoskedasticity assumption as shown by Levene's test ($p=0.74$):
+\begin{verbatim}
+Levene's Test for Homogeneity of Variance (center = median)
+       Df F value Pr(>F)
+group   2  0.2954 0.7446
+      156  
+\end{verbatim}
+
+We test this using ANOVA and confirm that there exists a difference among them.
+
+\begin{verbatim}
+              Df    Sum Sq   Mean Sq F value    Pr(>F)
+drive.wheels   2 0.0082212 0.0041106  69.231 < 2.2e-16 ***
+Residuals    156 0.0092624 0.0000594
+\end{verbatim}
+      
+
+Using the Tukey-HSD test we search which groups differ. The result is that the rear wheel drive systems are significantly more expensive.
+\begin{verbatim}
+Tukey multiple comparisons of means
+95% family-wise confidence level
+
+Fit: aov(formula = price ~ drive.wheels, data = autosWorking)
+
+$drive.wheels
+                diff          lwr         upr     p adj
+fwd-4wd -0.002790591 -0.006999128 0.001417946 0.2621226
+rwd-4wd  0.007253770  0.002858308 0.011649232 0.0004095
+rwd-fwd  0.010044360  0.008015527 0.012073194 0.0000000
+\end{verbatim}
+
+
+
+

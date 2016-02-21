@@ -1,0 +1,20 @@
+\select@language {english}
+\contentsline {figure}{\numberline {1}{\ignorespaces Response variable `price' versus regressors.\relax }}{11}{figure.caption.4}
+\contentsline {figure}{\numberline {2}{\ignorespaces Correlation matrix plot.\relax }}{12}{figure.caption.5}
+\contentsline {figure}{\numberline {3}{\ignorespaces Maximum likelihood of BoxCox transformation: $\lambda \approx -0.45$.\relax }}{13}{figure.caption.6}
+\contentsline {figure}{\numberline {4}{\ignorespaces Transformation of the price improves normality.\relax }}{13}{figure.caption.7}
+\contentsline {figure}{\numberline {5}{\ignorespaces Boxplot of drive-wheels versus price}}{14}{figure.caption.8}
+\contentsline {figure}{\numberline {6}{\ignorespaces PCA.\relax }}{15}{figure.caption.9}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Screeplot}}}{15}{subfigure.6.1}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Biplot}}}{15}{subfigure.6.2}
+\contentsline {figure}{\numberline {7}{\ignorespaces PCR\relax }}{16}{figure.caption.10}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {PCR --- normal}}}{16}{subfigure.7.1}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {PCR --- Box-Cox}}}{16}{subfigure.7.2}
+\contentsline {figure}{\numberline {8}{\ignorespaces PCR and PLS.\relax }}{17}{figure.caption.11}
+\contentsline {figure}{\numberline {9}{\ignorespaces Diagnostic plots for linear model using all variables as regressors.\relax }}{18}{figure.caption.12}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Residuals versus fitted}}}{18}{subfigure.9.1}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Normal Q-Q plot of standardized residuals}}}{18}{subfigure.9.2}
+\contentsline {figure}{\numberline {10}{\ignorespaces Diagnostic plots for linear model obtained by stepwise regression (AIC).\relax }}{19}{figure.caption.13}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Residuals versus fitted}}}{19}{subfigure.10.1}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Normal Q-Q plot of standardized residuals}}}{19}{subfigure.10.2}
+\contentsline {figure}{\numberline {11}{\ignorespaces Normal Q-Q plots of drive-wheels.\relax }}{20}{figure.caption.14}

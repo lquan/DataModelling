@@ -1,0 +1,1 @@
+This dataset has to many variables to properly determine the best regressors for linear regression by hand. That is why we use an automated technique for variable selection: stepwise regression. The variables that are selected with through method are: curb.weight, width, engine.size, peak.rpm, length, stroke, bore and the wheel.base. 

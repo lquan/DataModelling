@@ -1,0 +1,65 @@
+\ProvidesPackage{mystyle}
+%--------packages----------------------------------------------
+
+\usepackage[utf8]{inputenc}   %unicode
+\usepackage{babel}
+\usepackage{siunitx}
+\usepackage[T1]{fontenc}       %T1 cork encoding
+\usepackage{lmodern}          %latin modern fonts
+\usepackage{amssymb}
+%\usepackage{natbib}
+%\usepackage{gfsdidot} 
+%\usepackage{babelbib}
+%\usepackage{bbding}
+%\usepackage{textcomp}         %extra symbols
+\usepackage{amsmath}
+%\usepackage[margin=1.5in]{geometry}
+\usepackage{microtype}         %protrusion and kerning
+\usepackage[dvipsnames,usenames]{xcolor}
+\usepackage{graphicx}
+%\usepackage{lipsum}            %dummy text
+\usepackage{tabularx}
+\usepackage{booktabs}          %professional tables
+\usepackage{listings}
+% \usepackage{minted}
+\usepackage{subfig}
+\usepackage{multicol}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{rotating}
+\usepackage{amsbsy}
+\usepackage[pdfauthor={Andreas Put \& Li Quan},%
+pdftitle={Homework 2 (Statistische modellen en data-analyse)},%
+pagebackref=false,%
+pdftex]{hyperref}
+
+
+%-------------------------------------------------------------
+
+\floatstyle{ruled}
+\newfloat{summary}{thp}{lop}
+\floatname{summary}{Summary}
+
+\graphicspath{{./img/}}
+%\renewcommand*\familydefault{\sfdefault}
+\captionsetup{labelfont=bf,format=hang} %change appearance of captions
+
+%\DeclareMathOperator*{\argmax}{\arg\,\max}
+\renewcommand{\vec}[1]{\ensuremath{\boldsymbol{#1}}}
+
+\lstset{%
+language=R,                % the language of the code
+basicstyle=\scriptsize\ttfamily,       % the size of the fonts that are used for the code
+commentstyle=\scriptsize \ttfamily\emph,%
+stringstyle=\scriptsize\ttfamily,%\color{Gray}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+}

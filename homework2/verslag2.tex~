@@ -1,0 +1,70 @@
+\documentclass[a4paper,english,11pt,]{scrartcl}
+\usepackage{mystyle}
+
+\title{Statische Modellen \& Data-analyse}
+\subtitle{Homework 2}
+\author{Andreas Put \and Li Quan}
+%\subject{Verslag}
+\date{May 23, 2011}
+\bibliographystyle{abbrv}
+
+\begin{document}
+\maketitle
+
+%% inleiding + beschrijving dataset (variabelen + achtergrond)
+%% pca+pcr+pls, lineair model, variable selectie (forward,backward stepwise regression) -> price berekenen (zonder en met boxcox transformatie)
+%% anova, pairwise tests
+%% conclusie dataset
+\section{Introduction}
+We analyze the \emph{autos} dataset of the UCI Machine Learning Repository which can be found at \url{http://archive.ics.uci.edu/ml/machine-learning-databases/autos/}.
+We first give a short overview of the dataset and than discuss our analysis of the dataset.
+
+\section{Description dataset}
+\input{datasetdescription.tex}
+
+\section{Dataset exploration and preprocessing}
+\input{exploration.tex}
+
+\section{PCA and PCR/PLS}
+\input{pcr.tex}
+
+\section{Linear models}
+\input{lm.tex}
+
+\section{ANOVA}
+\input{anova.tex}
+
+\section{Conclusion}
+Because of the high dimension of our dataset (even after our simplification), it was quite difficult to find a good regression model (curse of dimensionality). Techniques like PCA, PCR and PLS are good techniques for this problem and are reasonably efficient to compute. A major disadvantage is the interpretation of the transformed regressors.
+
+For the general linear models, the variable selection was a problem. This was resolved using the stepwise regression method, which automatically selected a set of suitable regressors. This made the model easier to work with and to understand.
+
+The data preprocessing step was very important: the non-normality of the data was solved using a power transformation (more specifically, a BoxCox transformation). This resulted in better models, but this made the data more difficult to understand.
+
+
+
+
+\clearpage
+\appendix
+\input{tablesandfigures.tex}
+\clearpage
+
+\section{R-code\label{Rcode}}
+Used libraries:
+\begin{multicols}{2}
+\begin{itemize}
+ \item MASS
+  \item car
+  \item rggobi
+ \item corrplot
+ \item pls
+ \item FitAR
+\end{itemize}
+\end{multicols}
+\lstinputlisting{./R/homework2.R}
+% \inputminted[]{R}{./R/homework2.R}
+
+
+\clearpage
+\bibliography{biblio}
+\end{document} 
